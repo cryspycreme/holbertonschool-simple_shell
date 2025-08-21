@@ -13,17 +13,18 @@ int main(int argc, char **argv)
 {
     size_t size = 0;
     ssize_t ncread;
-    char *line = NULL, *input_copy, *token, **command;
+    char *line = NULL, *input_copy, *token, **command, *full_path;
     pid_t child;
     int i, status, execute, interactive = isatty(STDIN_FILENO);
 
-	(void)argc;
+    (void)argc;
+
     while (1)
     {
         if (interactive == 1)
             write(1, "$ ", 2);
 
-        ncread = getline(&line, &size, stdin);
+        ncread = getline(&line, &size, stdin); // need to free this memory
 
         if (ncread == -1)
         {
@@ -34,7 +35,7 @@ int main(int argc, char **argv)
             break;
         }
 
-        input_copy = strdup(line);
+        input_copy = strdup(line); // need to free memory
         if (input_copy == NULL)
         {
             perror("strdup");
@@ -63,33 +64,54 @@ int main(int argc, char **argv)
         }
         command[i] = NULL;
 
-        if (command[0] == NULL)
+        if (command[0] == NULL) // if input was empty
         {
-            free(command);
-            free(input_copy);
+            free(command);    // free space allocated for the string tokens
+            free(input_copy); // free the copy of input used for tokening
             continue;
         }
 
-        child = fork();
-        if (child < 0)
+        /*find directory in PATH of the command*/
+        full_path = find_path(command[0]);
+
+        if (full_path == NULL)
         {
-            perror("fork");
-            return (EXIT_FAILURE);
-        }
-        if (child == 0)
-        {
-            execute = execve(command[0], command, environ);
-            if (execute == -1)
-            {
-                dprintf(STDERR_FILENO, "%s: 1: %s: not found\n", argv[0], command[0]);
-                return (EXIT_FAILURE);
-            }
+            dprintf(STDERR_FILENO, "%s: 1: %s: not found\n", argv[0], command[0]);
         }
         else
         {
-            if (waitpid(child, &status, 0) == -1)
+            /*create child process to execute command -> turn this into a function*/
+            child = fork();
+
+            if (child < 0)
             {
-                perror("waitpid");
+                perror("fork");
+                free(full_path);
+                // free(command);
+                // free(input_copy);
+                return (EXIT_FAILURE);
+            }
+
+            if (child == 0)
+            {
+                execute = execve(full_path, command, environ);
+                if (execute == -1)
+                {
+                    perror("execve");
+                    free(full_path);
+                    // free(command);
+                    // free(input_copy);
+                    return (EXIT_FAILURE);
+                }
+            }
+            else
+            {
+                /*Parent process: wait until child finishes*/
+                if (waitpid(child, &status, 0) == -1)
+                {
+                    perror("waitpid");
+                }
+                free(full_path);
             }
         }
         free(command);
