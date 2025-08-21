@@ -11,5 +11,6 @@
 
 char *_getenv(const char *name);
 char *find_path(char *command);
+char *_getenv(const char *name);
 
 #endif

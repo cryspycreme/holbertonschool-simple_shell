@@ -80,6 +80,17 @@ int exit_code = 0;
 			goto cleanup;
 		}
 
+		if (strcmp(command[0], "env") == 0)
+		{
+			int j = 0;
+			while (environ[j] != NULL)
+			{
+				printf("%s\n", environ[j]);
+				j++;
+			}
+			goto cleanup;
+		}
+
 		full_path = find_path(command[0]);
 
 		if (full_path == NULL)
