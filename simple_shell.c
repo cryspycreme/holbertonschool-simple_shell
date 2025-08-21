@@ -11,15 +11,14 @@ extern char **environ;
 
 int main(int argc, char *argv[])
 {
-if (argc < 1)
-	return (0);
 size_t size = 0;
 ssize_t ncread;
 char *line = NULL, *input_copy = NULL, *token, **command = NULL, *full_path;
 pid_t child;
 int i, status, execute, interactive = isatty(STDIN_FILENO);
 int should_exit = 0;
-
+	if (argc < 1)
+		return (0);
 	while (1)
 	{	
 		input_copy = NULL;
