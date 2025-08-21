@@ -9,20 +9,23 @@
 #define MAX_ARGS 100
 extern char **environ;
 
-int main(int argc, char **argv)
+int main(void)
 {
-    size_t size = 0;
-    ssize_t ncread;
-    char *line = NULL, *input_copy, *token, **command, *full_path;
-    pid_t child;
-    int i, status, execute, interactive = isatty(STDIN_FILENO);
+size_t size = 0;
+ssize_t ncread;
+char *line = NULL, *input_copy = NULL, *token, **command = NULL, *full_path;
+pid_t child;
+int i, status, execute, interactive = isatty(STDIN_FILENO);
+int should_exit = 0;
 
-    (void)argc;
+	while (1)
+	{	
+		input_copy = NULL;
+		command = NULL;
+		full_path = NULL;
 
-    while (1)
-    {
-        if (interactive == 1)
-            write(1, "$ ", 2);
+		if (interactive == 1)
+		write(1, "$ ", 2);
 
         ncread = getline(&line, &size, stdin); // need to free this memory
 
@@ -39,7 +42,7 @@ int main(int argc, char **argv)
         if (input_copy == NULL)
         {
             perror("strdup");
-            continue;
+            goto cleanup;
         }
 
         if (ncread > 0 && input_copy[ncread - 1] == '\n')
@@ -50,73 +53,82 @@ int main(int argc, char **argv)
         i = 0;
         token = strtok(input_copy, " \t\n\r");
 
-        command = malloc(sizeof(char *) * MAX_ARGS);
-        if (command == NULL)
-        {
-            perror("malloc");
-            exit(EXIT_FAILURE);
-        }
-        while (token != NULL)
-        {
-            command[i] = token;
-            token = strtok(NULL, " \t\n\r");
-            i++;
-        }
-        command[i] = NULL;
+		command = malloc(sizeof(char *) * MAX_ARGS);
+		if (command == NULL)
+		{
+			perror("malloc");
+			goto cleanup;
+		}
 
-        if (command[0] == NULL) // if input was empty
-        {
-            free(command);    // free space allocated for the string tokens
-            free(input_copy); // free the copy of input used for tokening
-            continue;
-        }
+		while (token != NULL && i < MAX_ARGS - 1)
+		{
+			command[i] = token;
+			token = strtok(NULL, " \t\n\r");
+			i++;
+		}
+		command[i] = NULL;
 
-        /*find directory in PATH of the command*/
-        full_path = find_path(command[0]);
+		if (command[0] == NULL)
+		{
+			goto cleanup;
+		}
+		if (strcmp(command[0], "exit") == 0)
+		{
+			should_exit = 1;
+			goto cleanup;
+		}
 
-        if (full_path == NULL)
-        {
-            dprintf(STDERR_FILENO, "%s: 1: %s: not found\n", argv[0], command[0]);
-        }
-        else
-        {
-            /*create child process to execute command -> turn this into a function*/
-            child = fork();
+		full_path = find_path(command[0]);
 
-            if (child < 0)
-            {
-                perror("fork");
-                free(full_path);
-                // free(command);
-                // free(input_copy);
-                return (EXIT_FAILURE);
-            }
+		if (full_path == NULL)
+		{
+			dprintf(STDERR_FILENO, "Command not found: %s\n", command[0]);
+			goto cleanup;
+		}
 
-            if (child == 0)
-            {
-                execute = execve(full_path, command, environ);
-                if (execute == -1)
-                {
-                    perror("execve");
-                    free(full_path);
-                    // free(command);
-                    // free(input_copy);
-                    return (EXIT_FAILURE);
-                }
-            }
-            else
-            {
-                /*Parent process: wait until child finishes*/
-                if (waitpid(child, &status, 0) == -1)
-                {
-                    perror("waitpid");
-                }
-                free(full_path);
-            }
-        }
-        free(command);
-        free(input_copy);
-    }
-    free(line);
-    return (0);
+		child = fork();
+
+		if (child < 0)
+		{
+			perror("fork");
+			goto cleanup;
+		}
+
+		if (child == 0)
+		{
+			execute = execve(full_path, command, environ);
+			if (execute == -1)
+			{
+				perror("execve");
+				return (EXIT_FAILURE);
+			}
+		}
+		else
+		{
+			if (waitpid(child, &status, 0) == -1)
+			{
+				perror("waitpid");
+			}
+		}
+	cleanup:
+		if (full_path)
+		{
+			free(full_path);
+			full_path = NULL;
+		}
+		if (command)
+		{
+			free(command);
+			command = NULL;
+		}
+		if (input_copy)
+		{
+			free(input_copy);
+			input_copy = NULL;
+		}
+		if (should_exit)
+			break;
+	}
+	free(line);
+	return (0);
 }
