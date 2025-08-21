@@ -17,6 +17,7 @@ char *line = NULL, *input_copy = NULL, *token, **command = NULL, *full_path;
 pid_t child;
 int i, status, execute, interactive = isatty(STDIN_FILENO);
 int should_exit = 0;
+int exit_code = 0;
 	if (argc < 1)
 		return (0);
 	while (1)
@@ -84,6 +85,7 @@ int should_exit = 0;
 		if (full_path == NULL)
 		{
 			dprintf(STDERR_FILENO, "%s: 1: %s: not found\n", argv[0], command[0]);
+			exit_code = 127;
 			goto cleanup;
 		}
 
@@ -131,5 +133,5 @@ int should_exit = 0;
 			break;
 	}
 	free(line);
-	return (0);
+	return (exit_code);
 }
