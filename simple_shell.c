@@ -84,7 +84,7 @@ int exit_code = 0;
 
 		if (full_path == NULL)
 		{
-			dprintf(STDERR_FILENO, "%s: 1: %s: not found\n", argv[0], command[0]);
+			fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command[0]);
 			exit_code = 127;
 			goto cleanup;
 		}
