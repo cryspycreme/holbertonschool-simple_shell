@@ -9,8 +9,10 @@
 #define MAX_ARGS 100
 extern char **environ;
 
-int main(void)
+int main(int argc, char *argv[])
 {
+if (argc < 1)
+	return (0);
 size_t size = 0;
 ssize_t ncread;
 char *line = NULL, *input_copy = NULL, *token, **command = NULL, *full_path;
@@ -82,7 +84,7 @@ int should_exit = 0;
 
 		if (full_path == NULL)
 		{
-			dprintf(STDERR_FILENO, "Command not found: %s\n", command[0]);
+			dprintf(STDERR_FILENO, "%s: 1: %s: not found\n", argv[0], command[0]);
 			goto cleanup;
 		}
 
