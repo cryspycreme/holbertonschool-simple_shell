@@ -13,12 +13,17 @@ int main(void)
 {
 size_t size = 0;
 ssize_t ncread;
-char *line = NULL, *input_copy, *token, **command, *full_path;
+char *line = NULL, *input_copy = NULL, *token, **command = NULL, *full_path;
 pid_t child;
 int i, status, execute, interactive = isatty(STDIN_FILENO);
+int should_exit = 0;
 
 	while (1)
-	{
+	{	
+		input_copy = NULL;
+		command = NULL;
+		full_path = NULL;
+
 		if (interactive == 1)
 		write(1, "$ ", 2);
 
@@ -57,7 +62,7 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 			goto cleanup;
 		}
 
-		while (token != NULL)
+		while (token != NULL && i < MAX_ARGS - 1)
 		{
 			command[i] = token;
 			token = strtok(NULL, " \t\n\r");
@@ -67,6 +72,11 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 
 		if (command[0] == NULL)
 		{
+			goto cleanup;
+		}
+		if (strcmp(command[0], "exit") == 0)
+		{
+			should_exit = 1;
 			goto cleanup;
 		}
 
@@ -97,7 +107,7 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 		}
 		else
 		{
-		goto cleanup;	if (waitpid(child, &status, 0) == -1)
+			if (waitpid(child, &status, 0) == -1)
 			{
 				perror("waitpid");
 			}
@@ -118,6 +128,8 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 			free(input_copy);
 			input_copy = NULL;
 		}
+		if (should_exit)
+			break;
 	}
 	free(line);
 	return (0);
