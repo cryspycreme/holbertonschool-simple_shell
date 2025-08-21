@@ -42,7 +42,7 @@ int should_exit = 0;
         if (input_copy == NULL)
         {
             perror("strdup");
-            continue;
+            goto cleanup;
         }
 
         if (ncread > 0 && input_copy[ncread - 1] == '\n')
