@@ -27,7 +27,7 @@ int should_exit = 0;
 		if (interactive == 1)
 		write(1, "$ ", 2);
 
-        ncread = getline(&line, &size, stdin);
+        ncread = getline(&line, &size, stdin); // need to free this memory
 
         if (ncread == -1)
         {
@@ -38,7 +38,7 @@ int should_exit = 0;
             break;
         }
 
-        input_copy = strdup(line);
+        input_copy = strdup(line); // need to free memory
         if (input_copy == NULL)
         {
             perror("strdup");
