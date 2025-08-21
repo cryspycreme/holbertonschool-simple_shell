@@ -38,7 +38,7 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 		if (input_copy == NULL)
 		{
 			perror("strdup");
-			continue;
+			goto cleanup;
 		}
 
 		if (ncread > 0 && input_copy[ncread - 1] == '\n')
@@ -54,7 +54,7 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 		if (command == NULL)
 		{
 			perror("malloc");
-			exit(EXIT_FAILURE);
+			goto cleanup;
 		}
 
 		while (token != NULL)
@@ -67,25 +67,7 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 
 		if (command[0] == NULL)
 		{
-			free(command);
-			free(input_copy);
-			continue;
-		}
-
-		if (strcmp(command[0], "exit") == 0)
-		{
-			free(command);
-			free(input_copy);
-			exit(0);
-		}
-		else if (strcmp(command[0], "env") == 0)
-		{
-			char **env = environ;
-			while (*env)
-			{
-				printf("%s\n", *env);
-				env++;
-			}
+			goto cleanup;
 		}
 
 		full_path = find_path(command[0]);
@@ -93,7 +75,7 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 		if (full_path == NULL)
 		{
 			dprintf(STDERR_FILENO, "Command not found: %s\n", command[0]);
-			free(full_path);
+			goto cleanup;
 		}
 
 		child = fork();
@@ -101,7 +83,7 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 		if (child < 0)
 		{
 			perror("fork");
-			return (EXIT_FAILURE);
+			goto cleanup;
 		}
 
 		if (child == 0)
@@ -115,12 +97,27 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 		}
 		else
 		{
-			if (waitpid(child, &status, 0) == -1)
+		goto cleanup;	if (waitpid(child, &status, 0) == -1)
 			{
 				perror("waitpid");
 			}
 		}
-		free(input_copy);
+	cleanup:
+		if (full_path)
+		{
+			free(full_path);
+			full_path = NULL;
+		}
+		if (command)
+		{
+			free(command);
+			command = NULL;
+		}
+		if (input_copy)
+		{
+			free(input_copy);
+			input_copy = NULL;
+		}
 	}
 	free(line);
 	return (0);
