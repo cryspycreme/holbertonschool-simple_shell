@@ -9,7 +9,7 @@
 #define MAX_ARGS 100
 extern char **environ;
 
-int main(int argc, char **argv)
+int main(void)
 {
 size_t size = 0;
 ssize_t ncread;
