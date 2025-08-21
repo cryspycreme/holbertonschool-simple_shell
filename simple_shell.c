@@ -123,6 +123,13 @@ int exit_code = 0;
 			{
 				perror("waitpid");
 			}
+			else
+			{
+				if (WIFEXITED(status))
+					exit_code = WEXITSTATUS(status);
+				else if (WIFSIGNALED(status))
+					exit_code = 128 + WTERMSIG(status);
+			}
 		}
 	cleanup:
 		if (full_path)
