@@ -80,6 +80,7 @@ int i, status, execute, interactive = isatty(STDIN_FILENO);
 		}
 		else if (strcmp(command[0], "env") == 0)
 		{
+			char **env = environ;
 			while (*env)
 			{
 				printf("%s\n", *env);
