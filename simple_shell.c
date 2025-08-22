@@ -39,13 +39,11 @@ int main(int argc, char *argv[])
 			cleanup(NULL, command, input_copy);
 			continue;
 		}
-
 		if (strcmp(command[0], "exit") == 0)
 		{
 			cleanup(NULL, command, input_copy);
 			break;
 		}
-
 		if (strcmp(command[0], "env") == 0)
 		{
 			int j = 0;
@@ -59,7 +57,6 @@ int main(int argc, char *argv[])
 			continue;
 		}
 		full_path = find_path(command[0]);
-
 		if (full_path == NULL)
 		{
 			fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command[0]);
