@@ -7,6 +7,7 @@
  */
 
 #define MAX_ARGS 100
+
 extern char **environ;
 
 int main(int argc, char *argv[])
@@ -24,8 +25,8 @@ int main(int argc, char *argv[])
 	while (1)
 	{
 		input_copy = NULL;
-		command = NULL;
-		full_path = NULL;
+        command = NULL;
+        full_path = NULL;
 
 		if (interactive == 1)
 		write(1, "$ ", 2);
@@ -48,6 +49,18 @@ int main(int argc, char *argv[])
 		if (strcmp(command[0], "exit") == 0)
 		{
 			should_exit = 1;
+			cleanup(line, command, input_copy);
+			break;
+		}
+
+		if (strcmp(command[0], "env") == 0)
+		{
+			int j = 0;
+			while (environ[j] != NULL)
+			{
+				printf("%s\n", environ[j]);
+				j++;
+			}
 			goto cleanup;
 		}
 
@@ -62,21 +75,25 @@ int main(int argc, char *argv[])
 			goto cleanup;
 		}
 
+		if (strcmp(command[0], "env") == 0)
+		{
+			int j = 0;
+			while (environ[j] != NULL)
+			{
+				printf("%s\n", environ[j]);
+				j++;
+			}
+			cleanup(line, command, input_copy);
+			continue;
+		}
 		full_path = find_path(command[0]);
 
 		if (full_path == NULL)
 		{
 			fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command[0]);
+			cleanup(NULL, command, input_copy);
 			exit_code = 127;
-			goto cleanup;
-		}
-
-		child = fork();
-
-		if (child < 0)
-		{
-			perror("fork");
-			goto cleanup;
+			continue;
 		}
 
 		if (child == 0)
