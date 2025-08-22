@@ -14,4 +14,5 @@ void cleanup(char *full_path, char **command, char *input_copy)
 		{
 			free(input_copy);
 		}
-    }
+}
+    

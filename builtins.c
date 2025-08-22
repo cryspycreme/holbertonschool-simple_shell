@@ -1,5 +1,7 @@
 #include "headers.h"
 
+extern char **environ;
+
 void print_env(void)
 {
 	int i = 0;
@@ -22,7 +24,7 @@ int handle_builtin(char **command, int *should_exit)
 	if (strcmp(command[0], "env") == 0)
 	{
 		print_env();
-		rturn (1);
+		return (1);
 	}
 
 	return (0);
