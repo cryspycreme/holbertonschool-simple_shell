@@ -13,7 +13,7 @@
 
 char **tokenise(char *line, ssize_t ncread, char **input_copy_ptr)
 {
-	char *token, **command, *input_copy, *input_copy_ptr;
+	char *token, **command, *input_copy;
 	int i = 0;
 
 	input_copy = strdup(line);

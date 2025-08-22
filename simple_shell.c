@@ -6,122 +6,118 @@
  * Return: 0 (always success).
  */
 
-#define MAX_ARGS 100
 extern char **environ;
-
-int main(void)
+int main(int argc, char *argv[])
 {
-size_t size = 0;
-ssize_t ncread;
-char *line = NULL, *input_copy, *token, **command, *full_path;
-pid_t child;
-int i, status, execute, interactive = isatty(STDIN_FILENO);
+    size_t size = 0;
+    ssize_t ncread;
+    char *line = NULL, *input_copy, *token, **command, *full_path;
+    pid_t child;
+    int i, status, execute, interactive = isatty(STDIN_FILENO);
+    int should_exit = 0;
+    int exit_code = 0;
+    if (argc < 1)
+        return (0);
+    while (1)
+    {
+        input_copy = NULL;
+        command = NULL;
+        full_path = NULL;
 
-	while (1)
-	{
-		if (interactive == 1)
-		write(1, "$ ", 2);
+        /*PRINT PROMPT*/
+        if (interactive == 1)
+            write(1, "$ ", 2);
+        ncread = getline(&line, &size, stdin);
+        if (ncread == -1)
+        {
+            if (interactive == 1)
+            {
+                write(1, "\n", 1);
+            }
+            break;
+        }
 
-		ncread = getline(&line, &size, stdin);
+       command = tokenise(line, ncread, &input_copy);
+        
+        if (command[0] == NULL)
+            goto cleanup;
 
-		if (ncread == -1)
-		{
-			if (interactive == 1)
-			{
-				write(1, "\n", 1);
-			}
-			break;
-		}
+        /*BUILT IN COMMANDS*/
+        if (strcmp(command[0], "exit") == 0)
+        {
+            should_exit = 1;
+            goto cleanup;
+        }
+        if (strcmp(command[0], "env") == 0)
+        {
+            int j = 0;
+            while (environ[j] != NULL)
+            {
+                printf("%s\n", environ[j]);
+                j++;
+            }
+            goto cleanup;
+        }
 
-		input_copy = strdup(line);
+        /*FIND PATH*/
+        full_path = find_path(command[0]);
+        if (full_path == NULL)
+        {
+            fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command[0]);
+            exit_code = 127;
+            goto cleanup;
+        }
 
-		if (input_copy == NULL)
-		{
-			perror("strdup");
-			continue;
-		}
-
-		if (ncread > 0 && input_copy[ncread - 1] == '\n')
-		{
-			input_copy[ncread - 1] = '\0';
-		}
-
-		i = 0;
-
-		token = strtok(input_copy, " \t\n\r");
-
-		command = malloc(sizeof(char *) * MAX_ARGS);
-		if (command == NULL)
-		{
-			perror("malloc");
-			exit(EXIT_FAILURE);
-		}
-
-		while (token != NULL)
-		{
-			command[i] = token;
-			token = strtok(NULL, " \t\n\r");
-			i++;
-		}
-		command[i] = NULL;
-
-		if (command[0] == NULL)
-		{
-			free(command);
-			free(input_copy);
-			continue;
-		}
-
-		if (strcmp(command[0], "exit") == 0)
-		{
-			free(command);
-			free(input_copy);
-			exit(0);
-		}
-		else if (strcmp(command[0], "env") == 0)
-		{
-			char **env = environ;
-			while (*env)
-			{
-				printf("%s\n", *env);
-				env++;
-			}
-		}
-
-		full_path = find_path(command[0]);
-
-		if (full_path == NULL)
-		{
-			dprintf(STDERR_FILENO, "Command not found: %s\n", command[0]);
-			free(full_path);
-		}
-
-		child = fork();
-
-		if (child < 0)
-		{
-			perror("fork");
-			return (EXIT_FAILURE);
-		}
-
-		if (child == 0)
-		{
-			execute = execve(full_path, command, environ);
-			if (execute == -1)
-			{
-				perror("execve");
-				return (EXIT_FAILURE);
-			}
-		}
-		else
-		{
-			if (waitpid(child, &status, 0) == -1)
-			{
-				perror("waitpid");
-			}
-		}
-		free(input_copy);
-	}
-	free(line);
-	return (0);
+        /*EXECUTE*/
+        child = fork();
+        if (child < 0)
+        {
+            perror("fork");
+            goto cleanup;
+        }
+        if (child == 0)
+        {
+            execute = execve(full_path, command, environ);
+            if (execute == -1)
+            {
+                perror("execve");
+                return (EXIT_FAILURE);
+            }
+        }
+        else
+        {
+            if (waitpid(child, &status, 0) == -1)
+            {
+                perror("waitpid");
+            }
+            else
+            {
+                if (WIFEXITED(status))
+                    exit_code = WEXITSTATUS(status);
+                else if (WIFSIGNALED(status))
+                    exit_code = 128 + WTERMSIG(status);
+            }
+        }
+    /*CLEANUP*/
+    cleanup:
+        if (full_path)
+        {
+            free(full_path);
+            full_path = NULL;
+        }
+        if (command)
+        {
+            free(command);
+            command = NULL;
+        }
+        if (input_copy)
+        {
+            free(input_copy);
+            input_copy = NULL;
+        }
+        if (should_exit)
+            break;
+    }
+    free(line);
+    return (exit_code);
 }
