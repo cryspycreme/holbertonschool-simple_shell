@@ -11,7 +11,7 @@
 
 char *_getenv(const char *name);
 char *find_path(char *command);
-char *_getenv(const char *name);
-
+char **tokenise(char *line, ssize_t ncread, char **input_copy_ptr);
 int handle_builtin(char **command, int *should_exit);
+
 #endif

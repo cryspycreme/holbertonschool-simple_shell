@@ -29,51 +29,21 @@ int exit_code = 0;
 		if (interactive == 1)
 		write(1, "$ ", 2);
 
-	ncread = getline(&line, &size, stdin);
+		ncread = getline(&line, &size, stdin);
 
-	if (ncread == -1)
-	{
-	    if (interactive == 1)
-	    {
-		write(1, "\n", 1);
-	    }
-	    break;
-	}
-
-	input_copy = strdup(line);
-	if (input_copy == NULL)
-	{
-	    perror("strdup");
-	    goto cleanup;
-	}
-
-	if (ncread > 0 && input_copy[ncread - 1] == '\n')
-	{
-	    input_copy[ncread - 1] = '\0';
-	}
-
-	i = 0;
-	token = strtok(input_copy, " \t\n\r");
-
-		command = malloc(sizeof(char *) * MAX_ARGS);
-		if (command == NULL)
+		if (ncread == -1)
 		{
-			perror("malloc");
-			goto cleanup;
+	    		if (interactive == 1)
+	    		{
+				write(1, "\n", 1);
+	    		}
+	    		break;
 		}
 
-		while (token != NULL && i < MAX_ARGS - 1)
-		{
-			command[i] = token;
-			token = strtok(NULL, " \t\n\r");
-			i++;
-		}
-		command[i] = NULL;
-
+		command = tokenise(line, ncread, &input_copy);
 		if (command[0] == NULL)
-		{
-			goto cleanup;
-		}
+            		goto cleanup;
+
 		if (strcmp(command[0], "exit") == 0)
 		{
 			should_exit = 1;
@@ -152,4 +122,8 @@ int exit_code = 0;
 	}
 	free(line);
 	return (exit_code);
+<<<<<<< HEAD
 }
+=======
+}                  
+>>>>>>> crystal
