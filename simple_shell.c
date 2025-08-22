@@ -6,45 +6,43 @@
  * Return: 0 (always success).
  */
 
-#define MAX_ARGS 100
-
 extern char **environ;
 
 int main(int argc, char *argv[])
 {
-size_t size = 0;
-ssize_t ncread;
-char *line = NULL, *input_copy = NULL, **command = NULL, *full_path;
-int exe_code, interactive = isatty(STDIN_FILENO);
-int exit_code = 0;
+	size_t size = 0;
+	ssize_t ncread;
+	char *line = NULL, *input_copy = NULL, **command = NULL, *full_path;
+	int exe_code, interactive = isatty(STDIN_FILENO);
+	int exit_code = 0;
 
 	if (argc < 1)
 		return (0);
 	while (1)
 	{
 		input_copy = NULL;
-        command = NULL;
-        full_path = NULL;
+        	command = NULL;
+        	full_path = NULL;
 
 		if (interactive == 1)
 			write(1, "$ ", 2);
-        ncread = getline(&line, &size, stdin);
-        if (ncread == -1)
-        {
-            if (interactive == 1)
-                write(1, "\n", 1);
-            break;
-        }
+        	ncread = getline(&line, &size, stdin);
+        	if (ncread == -1)
+        	{
+            		if (interactive == 1)
+                	write(1, "\n", 1);
+            		break;
+        	}
 		command = tokenise(line, ncread, &input_copy);
 		if (command[0] == NULL)
 		{
-			cleanup(line, command, input_copy);
+			cleanup(NULL, command, input_copy);
 			continue;
 		}
 
 		if (strcmp(command[0], "exit") == 0)
 		{
-			cleanup(line, command, input_copy);
+			cleanup(NULL, command, input_copy);
 			break;
 		}
 
@@ -56,7 +54,7 @@ int exit_code = 0;
 				printf("%s\n", environ[j]);
 				j++;
 			}
-			cleanup(line, command, input_copy);
+			cleanup(NULL, command, input_copy);
 			continue;
 		}
 		

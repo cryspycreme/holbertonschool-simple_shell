@@ -56,7 +56,6 @@ char *find_path(char *command)
 			free(file_path);
 			path_token = strtok(NULL, ":");
 	}
-
 	free(path_copy);
 	return (NULL);
 }
