@@ -1,5 +1,13 @@
 #include "headers.h"
-
+/**
+ * exec_cmd - function to execute a command using execve
+ * @full_path: pointer to the full path of the command
+ * @command: pointer to the array of command tokens
+ *
+ * 
+ * Return: a code indicating the exit status of the command
+ *          or -1 on failure.
+ */
 extern char **environ;
 
 int exec_cmd(char *full_path, char **command)
