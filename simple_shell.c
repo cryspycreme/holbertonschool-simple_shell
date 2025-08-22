@@ -29,31 +29,31 @@ int exit_code = 0;
 		if (interactive == 1)
 		write(1, "$ ", 2);
 
-        ncread = getline(&line, &size, stdin);
+	ncread = getline(&line, &size, stdin);
 
-        if (ncread == -1)
-        {
-            if (interactive == 1)
-            {
-                write(1, "\n", 1);
-            }
-            break;
-        }
+	if (ncread == -1)
+	{
+	    if (interactive == 1)
+	    {
+		write(1, "\n", 1);
+	    }
+	    break;
+	}
 
-        input_copy = strdup(line);
-        if (input_copy == NULL)
-        {
-            perror("strdup");
-            goto cleanup;
-        }
+	input_copy = strdup(line);
+	if (input_copy == NULL)
+	{
+	    perror("strdup");
+	    goto cleanup;
+	}
 
-        if (ncread > 0 && input_copy[ncread - 1] == '\n')
-        {
-            input_copy[ncread - 1] = '\0';
-        }
+	if (ncread > 0 && input_copy[ncread - 1] == '\n')
+	{
+	    input_copy[ncread - 1] = '\0';
+	}
 
-        i = 0;
-        token = strtok(input_copy, " \t\n\r");
+	i = 0;
+	token = strtok(input_copy, " \t\n\r");
 
 		command = malloc(sizeof(char *) * MAX_ARGS);
 		if (command == NULL)
