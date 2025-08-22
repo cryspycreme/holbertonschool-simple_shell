@@ -21,18 +21,18 @@ int main(int argc, char *argv[])
 	while (1)
 	{
 		input_copy = NULL;
-        	command = NULL;
-        	full_path = NULL;
+		command = NULL;
+		full_path = NULL;
 
 		if (interactive == 1)
 			write(1, "$ ", 2);
-        	ncread = getline(&line, &size, stdin);
-        	if (ncread == -1)
-        	{
-            		if (interactive == 1)
-                	write(1, "\n", 1);
-            		break;
-        	}
+		ncread = getline(&line, &size, stdin);
+		if (ncread == -1)
+		{
+			if (interactive == 1)
+				write(1, "\n", 1);
+			break;
+		}
 		command = tokenise(line, ncread, &input_copy);
 		if (command[0] == NULL)
 		{
@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 		if (strcmp(command[0], "env") == 0)
 		{
 			int j = 0;
+
 			while (environ[j] != NULL)
 			{
 				printf("%s\n", environ[j]);
@@ -57,7 +58,6 @@ int main(int argc, char *argv[])
 			cleanup(NULL, command, input_copy);
 			continue;
 		}
-		
 		full_path = find_path(command[0]);
 
 		if (full_path == NULL)
