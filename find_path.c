@@ -22,7 +22,7 @@ char *find_path(char *command)
 			return (strdup(command));
 		return (NULL);
 	}
-	
+
 	path = _getenv("PATH");
 	if (path == NULL)
 		return (NULL);
@@ -52,7 +52,7 @@ char *find_path(char *command)
 			free(path_copy);
 			return (file_path);
 		}
-		
+
 			free(file_path);
 			path_token = strtok(NULL, ":");
 	}

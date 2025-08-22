@@ -21,7 +21,7 @@ int exit_code = 0;
 	if (argc < 1)
 		return (0);
 	while (1)
-	{	
+	{
 		input_copy = NULL;
 		command = NULL;
 		full_path = NULL;

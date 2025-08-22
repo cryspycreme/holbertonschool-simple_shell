@@ -12,7 +12,7 @@ char *_getenv(const char *name)
 {
 	int i = 0;
 	int name_len = strlen(name);
-	
+
 	while (environ[i] != NULL)
 	{
 		if (environ[i][name_len] == '=' && strncmp(environ[i], name, name_len) == 0)
