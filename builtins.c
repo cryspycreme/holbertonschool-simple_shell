@@ -1,8 +1,6 @@
 #include "headers.h"
 #include <string.h>
 
-extern char **environ;
-
 int handle_exit(char **command, char *line, char *input_copy)
 {
 	if (strcmp(command[0], "exit") == 0)
