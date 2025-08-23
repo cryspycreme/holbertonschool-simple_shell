@@ -9,6 +9,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+extern char **environ;
+
 char *_getenv(const char *name);
 char *find_path(char *command);
 char **tokenise(char *line, ssize_t ncread, char **input_copy_ptr);
