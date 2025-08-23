@@ -22,7 +22,7 @@ This project will help you learn about:
 - Executing programs with `execve`
 - Handling EOF (“end-of-file”)
 
-## Contents (to be added when we finish adding everything in)
+## Contents 
 
 You will find files and folders for:
 - **simple_shell.c**: Entry point for the shell, main shell, loop, prompt, line reading
