@@ -1,5 +1,13 @@
 #include "headers.h"
 
+/**
+ * try_direct - checks if command contains a '/' to execute directly
+ *
+ * @command: command string to check
+ * @buf: pointer to a stat struct used to verify if the file exists
+ * Return: pointer to newly allocated string of command path, or NULL
+ */
+
 /* helper to validate direct path*/
 static char *try_direct(char *command, struct stat *buf)
 {
@@ -11,6 +19,16 @@ static char *try_direct(char *command, struct stat *buf)
 	}
 	return (NULL);
 }
+
+/**
+ * scan_path - search through directories in PATH for command
+ *
+ * @path_copy: modifiable copy of the path string
+ * @command: command name to search for
+ * @cmd_len: length of the command string
+ * @buf: pointer to stat struct to check if file exists
+ * Return: full path name of the command, NULL if non-existent/error.
+ */
 
 /* scan path*/
 static char *scan_path(char *path_copy, char *command,
