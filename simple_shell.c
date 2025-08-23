@@ -78,7 +78,6 @@ static int builtins_flow(char **command, char *line, char *input_copy)
  * Return: 0 always
  */
 
-/*resolve + exec + cleanup; updates exit_code; returns 0 to continue loop*/
 static int execute_flow(char **command, char *progname,
 		char *input_copy, int *exit_code)
 {
@@ -97,7 +96,6 @@ static int execute_flow(char **command, char *progname,
 		if (ec >= 0)
 			*exit_code = ec;
 	}
-
 	cleanup(full_path, command, input_copy);
 	return (0);
 }
