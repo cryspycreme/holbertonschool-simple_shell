@@ -14,6 +14,7 @@ char *find_path(char *command);
 char **tokenise(char *line, ssize_t ncread, char **input_copy_ptr);
 int exec_cmd(char *full_path, char **command);
 void cleanup(char *full_path, char **command, char *input_copy);
-
+int handle_exit(char **command, char *line, char *input_copy);
+int handle_env(char **command, char *input_copy);
 
 #endif

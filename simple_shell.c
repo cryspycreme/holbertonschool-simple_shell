@@ -39,23 +39,13 @@ int main(int argc, char *argv[])
 			cleanup(NULL, command, input_copy);
 			continue;
 		}
-		if (strcmp(command[0], "exit") == 0)
-		{
-			cleanup(NULL, command, input_copy);
-			break;
-		}
-		if (strcmp(command[0], "env") == 0)
-		{
-			int j = 0;
 
-			while (environ[j] != NULL)
-			{
-				printf("%s\n", environ[j]);
-				j++;
-			}
-			cleanup(NULL, command, input_copy);
+		if (handle_exit(command, line, input_copy))
+			break;
+
+		if (handle_env(command, input_copy))
 			continue;
-		}
+
 		full_path = find_path(command[0]);
 		if (full_path == NULL)
 		{

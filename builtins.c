@@ -1,31 +1,32 @@
 #include "headers.h"
+#include <string.h>
 
 extern char **environ;
 
-void print_env(void)
+int handle_exit(char **command, char *line, char *input_copy)
 {
-	int i = 0;
-
-	for (;  environ[i]; i++)
-		printf("%s\n", environ[i]);
-}
-
-int handle_builtin(char **command, int *should_exit)
-{
-	if (!command || !command[0])
-		return (0);
-
 	if (strcmp(command[0], "exit") == 0)
 	{
-		*should_exit = 1;
-		return (1);
+		cleanup(NULL, command, input_copy);
+		free(line);
+		exit(0);
 	}
+	return (0);
+}
+
+int handle_env(char **command, char *input_copy)
+{
+	int i;
 
 	if (strcmp(command[0], "env") == 0)
 	{
-		print_env();
+		for (i = 0; environ[i]; i++)
+		{
+			write(STDOUT_FILENO, environ[i], strlen(environ[i]));
+			write(STDOUT_FILENO, "\n", 1);
+		}
+		cleanup(NULL, command, input_copy);
 		return (1);
 	}
-
 	return (0);
 }
