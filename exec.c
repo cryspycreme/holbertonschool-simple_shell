@@ -19,10 +19,11 @@ int exec_cmd(char *full_path, char **command)
 		perror("fork");
 		return (-1);
 	}
+
 	if (child == 0)
 	{
-	    execute = execve(full_path, command, environ);
-	    if (execute == -1)
+		execute = execve(full_path, command, environ);
+		if (execute == -1)
 		{
 			perror("execve");
 			_exit(EXIT_FAILURE);
