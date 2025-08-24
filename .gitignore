@@ -1,3 +1,4 @@
 simple_shell
 *.o
 a.out
+.DS_Store

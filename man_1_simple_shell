@@ -1,0 +1,98 @@
+.TH SIMPLE_SHELL "August 2025" "simple_shell" "User Commands"
+
+.SH NAME
+.B simple_shell
+\- simple UNIX command interpreter
+
+.SH SYNOPSIS
+.B simple_shell
+.RI [ script_file ]
+
+.SH DESCRIPTION
+.B simple_shell
+is a small UNIX shell that runs commands interactively at a prompt or, in non\-interactive mode, reads command lines from standard input, scripts, or pipelines until EOF.
+
+.SH STDIN
+.PP
+In interactive mode (when
+.BR isatty (3)
+reports a terminal),
+the shell prints a prompt ("\$ ") before each command line and waits for user input. The shell reads command lines from standard input. Pressing Ctrl\-D on an empty line ends the session.
+
+.PP
+When standard input is not a terminal, the shell reads lines from stdin without showing a prompt, executes them in order, and stops at end of file.
+
+.SH OPERANDS
+The following operand is supported:
+.TP
+.I script_file
+Path to a text file containing one command per line. The shell executes the
+file sequentially and exits when end-of-file is reached.
+
+.SH INPUT FILES
+A script file is a plain text file with one command per line.
+Comments, variable expansion, redirections, and pipelines are not supported
+unless explicitly implemented.
+
+.SH ENVIRONMENT VARIABLES
+On startup the shell inherits its environment.
+The
+.B PATH
+variable is used to locate executables when a command does not contain a
+slash. The
+.B env
+builtin writes the current environment to standard output.
+No parameter expansion or special handling of variables (e.g., \fBHOME\fR,
+\fBPWD\fR) is performed unless implemented.
+
+.SH STDOUT
+Output from executed programs is passed through unchanged to standard output.
+In interactive mode the prompt ("\$ ") is written to standard output.
+
+.SH EXIT STATUS
+The shell exits with the exit status of the last executed command.
+If a command cannot be found, the shell returns
+.B 127
+as the exit status.
+Builtins return 0 on success and a non\-zero value on error.
+
+.SH EXAMPLES
+.SS Interactive
+.nf
+\$ ./simple_shell
+\$ /bin/echo hello
+hello
+\$ ls -1
+file1
+file2
+\$ exit
+.fi
+
+.SS Non-interactive (pipe to stdin)
+.nf
+\$ printf "ls -1\n/bin/echo done\n" | ./simple_shell
+file1
+file2
+done
+\$ echo \$?
+0
+.fi
+
+.SH LIMITATIONS
+.IP \(bu 4
+No support for I/O redirection, pipelines, command chaining (&&, ||), or background jobs.
+.IP \(bu 4
+Only the builtins
+.B env
+and
+.B exit
+are implemented.
+
+.SH BUGS
+Very long input lines or unusual binary data on stdin may lead to undefined behavior.
+
+
+.SH AUTHORS
+Crystal Chiam
+Karen Andrianaharison
+Chloe Yang
