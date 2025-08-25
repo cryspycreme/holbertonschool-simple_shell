@@ -11,14 +11,13 @@
  */
 
 int execute_flow(char **command, char *progname,
-		char *input_copy, int *exit_code)
+		int *exit_code)
 {
 	char *full_path = find_path(command[0]);
 
 	if (full_path == NULL)
 	{
 		fprintf(stderr, "%s: 1: %s: not found\n", progname, command[0]);
-		cleanup(NULL, command, input_copy);
 		*exit_code = 127;
 		return (0);
 	}
@@ -28,6 +27,6 @@ int execute_flow(char **command, char *progname,
 		if (ec >= 0)
 			*exit_code = ec;
 	}
-	cleanup(full_path, command, input_copy);
+	cleanup(full_path, NULL, NULL);
 	return (0);
 }

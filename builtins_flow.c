@@ -14,7 +14,6 @@ int builtins_flow(char **command, char *line, char *input_copy, int *exit_code)
 {
 	if (command[0] == NULL)
 	{
-		cleanup(NULL, command, input_copy);
 		return (1);
 	}
 	
@@ -23,7 +22,6 @@ int builtins_flow(char **command, char *line, char *input_copy, int *exit_code)
 	
 	if (handle_env(command, input_copy))
 	{
-		cleanup(NULL, command, input_copy);
 		return (1);
 	}
 	return (0);

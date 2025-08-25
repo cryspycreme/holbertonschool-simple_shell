@@ -43,7 +43,8 @@ int main(int argc, char *argv[])
 				continue;
 			}
 		}
-		execute_flow(command, argv[0], input_copy, &exit_code);
+		execute_flow(command, argv[0], &exit_code);
+		cleanup(NULL, command, input_copy);
 	}
 	free(line);
 	return (exit_code);

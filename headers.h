@@ -21,7 +21,6 @@ void prompt_if_interactive(int interactive);
 int handle_env(char **command, char *input_copy);
 int read_line_into(char **line, size_t *size, int interactive);
 int builtins_flow(char **command, char *line, char *input_copy, int *exit_code);
-int execute_flow(char **command, char *progname,
-		char *input_copy, int *exit_code);
+int execute_flow(char **command, char *progname, int *exit_code);
 
 #endif
