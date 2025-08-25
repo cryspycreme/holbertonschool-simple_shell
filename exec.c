@@ -42,6 +42,6 @@ int exec_cmd(char *full_path, char **command)
 		return (WEXITSTATUS(status));
 	}
 	else if (WIFSIGNALED(status))
-		return 128 + WTERMSIG(status);
+		return (128 + WTERMSIG(status));
 	return (-1);
 }
