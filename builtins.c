@@ -10,7 +10,7 @@
  * Return: 0 - exit
  */
 
-int handle_exit(char **command, char *line, char *input_copy, int *exit_code)
+int handle_exit(char **command, int *exit_code)
 {
 	if (strcmp(command[0], "exit") == 0)
 	{
@@ -27,7 +27,7 @@ int handle_exit(char **command, char *line, char *input_copy, int *exit_code)
  * Return: 1 if command success, 0 on failure
  */
 
-int handle_env(char **command, char *input_copy)
+int handle_env(char **command)
 {
 	int i;
 
