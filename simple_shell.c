@@ -35,7 +35,10 @@ int main(int argc, char *argv[])
 			if (b == -1)
 				break;
 			if (b == 1)
+			{
+				cleanup(NULL, command, input_copy);
 				continue;
+			}
 		}
 		execute_flow(command, argv[0], &exit_code);
 		cleanup(NULL, command, input_copy);
