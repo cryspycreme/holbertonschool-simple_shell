@@ -33,7 +33,11 @@ int main(int argc, char *argv[])
 			int b = builtins_flow(command, &exit_code);
 
 			if (b == -1)
+			{
+				cleanup(NULL, command, input_copy);
+				free(line);
 				break;
+			}
 			if (b == 1)
 			{
 				cleanup(NULL, command, input_copy);
