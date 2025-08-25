@@ -54,7 +54,7 @@ static char *scan_path(char *path_copy, char *command,
 		if (stat(file_path, buf) == 0)
 		{
 			free(path_copy);
-					return (file_path);
+			return (file_path);
 		}
 
 		free(file_path);

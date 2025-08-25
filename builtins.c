@@ -10,13 +10,13 @@
  * Return: 0 - exit
  */
 
-int handle_exit(char **command, char *line, char *input_copy)
+int handle_exit(char **command, char *line, char *input_copy, int *exit_code)
 {
 	if (strcmp(command[0], "exit") == 0)
 	{
 		cleanup(NULL, command, input_copy);
 		free(line);
-		exit(0);
+		exit(*exit_code);
 	}
 	return (0);
 }

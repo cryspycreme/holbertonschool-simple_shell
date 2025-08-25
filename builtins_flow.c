@@ -10,14 +10,14 @@
  */
 
 /* handle builtins*/
-int builtins_flow(char **command, char *line, char *input_copy)
+int builtins_flow(char **command, char *line, char *input_copy, int *exit_code)
 {
 	if (command[0] == NULL)
 	{
 		cleanup(NULL, command, input_copy);
 		return (1);
 	}
-	if (handle_exit(command, line, input_copy))
+	if (handle_exit(command, line, input_copy, exit_code))
 		return (-1);
 	if (handle_env(command, input_copy))
 	{
