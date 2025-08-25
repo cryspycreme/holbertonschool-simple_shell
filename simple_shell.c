@@ -33,15 +33,9 @@ int main(int argc, char *argv[])
 			int b = builtins_flow(command, line, input_copy, &exit_code);
 
 			if (b == -1)
-			{	
-				cleanup(NULL, command, input_copy);
 				break;
-			}
 			if (b == 1)
-			{
-				cleanup(NULL, command, input_copy);
 				continue;
-			}
 		}
 		execute_flow(command, argv[0], &exit_code);
 		cleanup(NULL, command, input_copy);
