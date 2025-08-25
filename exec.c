@@ -34,11 +34,12 @@ int exec_cmd(char *full_path, char **command)
 		if (waitpid(child, &status, 0) == -1)
 		{
 			perror("waitpid");
+			return (-1);
 		}
 	}
 	if (WIFEXITED(status))
 	{
 		return (WEXITSTATUS(status));
-		return (-1);
 	}
+	return (-1);
 }
