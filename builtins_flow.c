@@ -10,14 +10,14 @@
  */
 
 /* handle builtins*/
-int builtins_flow(char **command, int *exit_code)
+int builtins_flow(char **command)
 {
 	if (command[0] == NULL)
 	{
 		return (1);
 	}
 	
-	if (handle_exit(command,exit_code))
+	if (handle_exit(command) == -1)
 		return (-1);
 	
 	if (handle_env(command))

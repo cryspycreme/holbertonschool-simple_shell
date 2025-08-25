@@ -10,11 +10,11 @@
  * Return: 0 - exit
  */
 
-int handle_exit(char **command, int *exit_code)
+int handle_exit(char **command)
 {
 	if (strcmp(command[0], "exit") == 0)
 	{
-		exit(*exit_code);
+		return (-1);
 	}
 	return (0);
 }

@@ -30,12 +30,11 @@ int main(int argc, char *argv[])
 
 		command = tokenise(line, ncread, &input_copy);
 		{
-			int b = builtins_flow(command, &exit_code);
+			int b = builtins_flow(command);
 
 			if (b == -1)
 			{
 				cleanup(NULL, command, input_copy);
-				free(line);
 				break;
 			}
 			if (b == 1)

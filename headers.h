@@ -16,11 +16,11 @@ char *find_path(char *command);
 char **tokenise(char *line, ssize_t ncread, char **input_copy_ptr);
 int exec_cmd(char *full_path, char **command);
 void cleanup(char *full_path, char **command, char *input_copy);
-int handle_exit(char **command, int *exit_code);
+int handle_exit(char **command);
 void prompt_if_interactive(int interactive);
 int handle_env(char **command);
 int read_line_into(char **line, size_t *size, int interactive);
-int builtins_flow(char **command, int *exit_code);
+int builtins_flow(char **command);
 int execute_flow(char **command, char *progname, int *exit_code);
 
 #endif
