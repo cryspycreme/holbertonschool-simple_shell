@@ -4,7 +4,6 @@
  *
  * @command: parsed command tokens
  * @progname: program name for error messages
- * @input_copy: duplicate of input for tokenization
  * @exit_code: pointer to store exit status
  *
  * Return: 0 always

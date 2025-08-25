@@ -5,8 +5,6 @@
  * handle_exit - exits the shell
  *
  * @command: pointer to array of strings ie command line
- * @line: input from the command line
- * @input_copy: copy of input string
  * Return: 0 - exit
  */
 
@@ -23,7 +21,6 @@ int handle_exit(char **command)
  * handle_env - prints the environment
  *
  * @command: pointer to array of strings ie command line
- * @input_copy: copy of input string
  * Return: 1 if command success, 0 on failure
  */
 
