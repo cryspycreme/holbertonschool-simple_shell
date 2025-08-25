@@ -14,8 +14,6 @@ int handle_exit(char **command, char *line, char *input_copy, int *exit_code)
 {
 	if (strcmp(command[0], "exit") == 0)
 	{
-		cleanup(NULL, command, input_copy);
-		free(line);
 		exit(*exit_code);
 	}
 	return (0);
@@ -40,7 +38,6 @@ int handle_env(char **command, char *input_copy)
 			write(STDOUT_FILENO, environ[i], strlen(environ[i]));
 			write(STDOUT_FILENO, "\n", 1);
 		}
-		cleanup(NULL, command, input_copy);
 		return (1);
 	}
 	return (0);
