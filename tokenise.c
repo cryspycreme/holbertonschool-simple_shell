@@ -32,7 +32,7 @@ char **tokenise(char *line, ssize_t ncread, char **input_copy_ptr)
 	if (command == NULL)
 	{
 		perror("malloc");
-		free(input_copy);
+		cleanup(NULL, NULL, input_copy);
 		return (NULL);
 	}
 
