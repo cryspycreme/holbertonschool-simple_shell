@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
 
 		execute_flow(command, argv[0], input_copy, &exit_code);
 	}
-
 	free(line);
 	return (exit_code);
 }

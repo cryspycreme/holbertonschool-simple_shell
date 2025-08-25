@@ -37,6 +37,8 @@ int exec_cmd(char *full_path, char **command)
 		}
 	}
 	if (WIFEXITED(status))
+	{
 			return (WEXITSTATUS(status));
 			return (-1);
+	}
 }
